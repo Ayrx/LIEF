@@ -91,6 +91,7 @@ install:
 
   # Upgrade pip
   - python.exe -m pip install --disable-pip-version-check --user --upgrade pip
+  - python.exe -m pip install --user wheel
   - python.exe -m pip install --upgrade setuptools
 
 
@@ -108,23 +109,21 @@ build_script:
       -DPYTHON_EXECUTABLE=%PYTHON_BINARY%
       -DPYTHON_LIBRARY=%PYTHON_LIBRARY% .
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - cmake --build . --config Release --target lief_samples -- /v:m /logger:%MSBuildLogger%
-  - cmake .
-  - cmake --build . --config Release --target ALL_BUILD -- /v:m /logger:%MSBuildLogger%
+  - python.exe .\setup.py bdist_wheel && exit 0 # Ignore warnings...
 
-test_script:
-  - cmake --build . --config Release --target lief_samples -- /v:m /logger:%MSBuildLogger%
-  - cmake .
-  - cmake --build . --config Release --target check-lief -- /v:m /logger:%MSBuildLogger%
+#test_script:
+#  - cmake --build . --config Release --target lief_samples -- /v:m /logger:%MSBuildLogger%
+#  - cmake .
+#  - cmake --build . --config Release --target check-lief -- /v:m /logger:%MSBuildLogger%
 
-after_build:
-  - cmake --build . --config Release --target package -- /v:m /logger:%MSBuildLogger%
-  - cd api\python
-  - python.exe .\setup.py bdist_egg && exit 0 # Ignore warnings...
-  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { python.exe .\setup.py sdist --formats=zip } # Ignore warnings...
-  - ps: if ($env:APPVEYOR_REPO_TAG -eq "false") { python.exe .\setup.py sdist --dev --formats=zip } # Ignore warnings...
-  - cd ..\..
-  - bash ./.github/deploy.sh
+#after_build:
+#  - cmake --build . --config Release --target package -- /v:m /logger:%MSBuildLogger%
+#  - cd api\python
+#  - python.exe .\setup.py bdist_egg && exit 0 # Ignore warnings...
+#  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { python.exe .\setup.py sdist --formats=zip } # Ignore warnings...
+#  - ps: if ($env:APPVEYOR_REPO_TAG -eq "false") { python.exe .\setup.py sdist --dev --formats=zip } # Ignore warnings...
+#  - cd ..\..
+#  - bash ./.github/deploy.sh
 
 artifacts:
   - path: '*.zip'
