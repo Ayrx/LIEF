@@ -117,7 +117,7 @@ matrix:
 
         # OSX 10.12 - xcode 8.3 - Python 3.7
         - os: osx
-          osx_image: xcode8.3
+          osx_image: xcode10.1
           compiler: clang
           env: >
             [
