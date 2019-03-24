@@ -116,14 +116,14 @@ build_script:
 #  - cmake .
 #  - cmake --build . --config Release --target check-lief -- /v:m /logger:%MSBuildLogger%
 
-#after_build:
-#  - cmake --build . --config Release --target package -- /v:m /logger:%MSBuildLogger%
-#  - cd api\python
-#  - python.exe .\setup.py bdist_egg && exit 0 # Ignore warnings...
-#  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { python.exe .\setup.py sdist --formats=zip } # Ignore warnings...
-#  - ps: if ($env:APPVEYOR_REPO_TAG -eq "false") { python.exe .\setup.py sdist --dev --formats=zip } # Ignore warnings...
-#  - cd ..\..
-#  - bash ./.github/deploy.sh
+after_build:
+  #- cmake --build . --config Release --target package -- /v:m /logger:%MSBuildLogger%
+  #- cd api\python
+  #- python.exe .\setup.py bdist_egg && exit 0 # Ignore warnings...
+  #- ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { python.exe .\setup.py sdist --formats=zip } # Ignore warnings...
+  #- ps: if ($env:APPVEYOR_REPO_TAG -eq "false") { python.exe .\setup.py sdist --dev --formats=zip } # Ignore warnings...
+  #- cd ..\..
+  - bash ./.github/deploy.sh
 
 artifacts:
   - path: '*.zip'
@@ -134,6 +134,9 @@ artifacts:
 
   - path: 'api\python\dist\*.egg'
     name: python-egg
+
+  - path: 'dist\*.whl'
+    name: python-wheel
 
 
 deploy:
