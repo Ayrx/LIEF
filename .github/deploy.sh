@@ -107,7 +107,7 @@ if ! git clone -b "$branch" --single-branch https://github.com/lief-project/pack
     git  clone -b master    --single-branch https://github.com/lief-project/packages.git
     new_branch=1
 fi
-cd packages/lief || exit 1
+cd packages || exit 1
 chmod 700 .git
 
 git config user.name "$git_user"
@@ -122,7 +122,7 @@ fi
 git reset --soft ebacb6adf12a5866db66346ce591f634333bde24
 git ls-files -v
 
-
+cd lief
 /bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.zip .
 /bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.egg .
 /bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.whl .
