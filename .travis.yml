@@ -216,7 +216,7 @@ script:
 
 after_success:
   - make package
-  - sudo $PYTHON_BINARY -m pip install setuptools
+  - sudo $PYTHON_BINARY -m pip install setuptools requests mako
   - sudo $PYTHON_BINARY -m pip install wheel
   - sudo $PYTHON_BINARY -m pip install --upgrade setuptools
   - cd api/python

@@ -133,6 +133,8 @@ else
     /bin/cp -rf $LIEF_BUILDDIR/*.tar.gz . || true
 fi
 
+${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py . > index.html
+
 git add .
 
 if git diff --cached --exit-code --quiet >/dev/null; then
