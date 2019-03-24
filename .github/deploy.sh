@@ -123,14 +123,14 @@ git reset --soft ebacb6adf12a5866db66346ce591f634333bde24
 git ls-files -v
 
 cd lief
-/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.zip .
-/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.egg .
-/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.whl .
+/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.zip . || true
+/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.egg . || true
+/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.whl . || true
 
 if [[ -n $APPVEYOR_JOB_ID ]]; then
-    /bin/cp -rf $LIEF_BUILDDIR/*.zip .
+    /bin/cp -rf $LIEF_BUILDDIR/*.zip . || true
 else
-    /bin/cp -rf $LIEF_BUILDDIR/*.tar.gz .
+    /bin/cp -rf $LIEF_BUILDDIR/*.tar.gz . || true
 fi
 
 git add .
