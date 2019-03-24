@@ -214,18 +214,18 @@ script:
   - sudo $PYTHON_BINARY -m pip install --upgrade pip
   - $PYTHON_BINARY ./setup.py --lief-test build -j8 bdist_wheel
 
-#after_success:
-#  - make package
-#  - sudo $PYTHON_BINARY -m pip install setuptools
-#  - sudo $PYTHON_BINARY -m pip install wheel
-#  - sudo $PYTHON_BINARY -m pip install --upgrade setuptools
-#  - cd api/python
-#  - $PYTHON_BINARY setup.py bdist_egg
-#  - if [[ -z "$TRAVIS_TAG" ]]; then $PYTHON_BINARY setup.py sdist --dev --formats=zip ;fi
-#  - if [[ -n "$TRAVIS_TAG" ]]; then $PYTHON_BINARY setup.py sdist --formats=zip       ;fi
-#  - cd $TRAVIS_BUILD_DIR
-#  - bash ./.github/deploy.sh
-#  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$PYTHON_VERSION" == "3.6" ]]; then $PYTHON_BINARY ./.github/trigger_docker.py ;fi
+after_success:
+  - make package
+  - sudo $PYTHON_BINARY -m pip install setuptools
+  - sudo $PYTHON_BINARY -m pip install wheel
+  - sudo $PYTHON_BINARY -m pip install --upgrade setuptools
+  - cd api/python
+  - $PYTHON_BINARY setup.py bdist_egg
+  - if [[ -z "$TRAVIS_TAG" ]]; then $PYTHON_BINARY setup.py sdist --dev --formats=zip ;fi
+  - if [[ -n "$TRAVIS_TAG" ]]; then $PYTHON_BINARY setup.py sdist --formats=zip       ;fi
+  - cd $TRAVIS_BUILD_DIR
+  - bash ./.github/deploy.sh
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$PYTHON_VERSION" == "3.6" ]]; then $PYTHON_BINARY ./.github/trigger_docker.py ;fi
 
 
 #deploy:

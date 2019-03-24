@@ -62,6 +62,7 @@ case $branch in
     devel*) ;;
     master*) ;;
     deploy*) ;;
+    "enhancement/setup") ;;
     *) exit 0;;
 esac
 
@@ -73,7 +74,7 @@ rev=$(git rev-parse --verify HEAD)
 timestamp=$(git log -n1 --format='%at' $rev)
 date=$(TZ=UTC0 date -d "@$timestamp" '+%Y%m%d-%H%M%S')
 #branch="$branch-$date-${rev:0:6}"
-branch="lief-$branch-latest"
+branch="gh-pages"
 if [[ -n $APPVEYOR_JOB_ID ]]; then
     branch="$branch"
     git_user="AppVeyor CI"
@@ -106,7 +107,7 @@ if ! git clone -b "$branch" --single-branch https://github.com/lief-project/pack
     git  clone -b master    --single-branch https://github.com/lief-project/packages.git
     new_branch=1
 fi
-cd packages || exit 1
+cd packages/lief || exit 1
 chmod 700 .git
 
 git config user.name "$git_user"
@@ -117,12 +118,14 @@ if [[ $new_branch == 1 ]]; then
     git reset --hard || true
 fi
 
-git reset --soft `git rev-list --all | tail -1`
+#git reset --soft `git rev-list --all | tail -1`
+git reset --soft ebacb6adf12a5866db66346ce591f634333bde24
 git ls-files -v
 
 
 /bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.zip .
 /bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.egg .
+/bin/cp -rf $LIEF_BUILDDIR/api/python/dist/*.whl .
 
 if [[ -n $APPVEYOR_JOB_ID ]]; then
     /bin/cp -rf $LIEF_BUILDDIR/*.zip .
