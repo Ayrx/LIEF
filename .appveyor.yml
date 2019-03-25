@@ -109,13 +109,7 @@ build_script:
   #    -DPYTHON_EXECUTABLE=%PYTHON_BINARY%
   #    -DPYTHON_LIBRARY=%PYTHON_LIBRARY% .
   - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  #- python.exe .\setup.py --lief-test bdist_wheel && exit 0 # Ignore warnings...
-  - python.exe .\setup.py bdist_wheel && exit 0 # Ignore warnings...
-
-#test_script:
-#  - cmake --build . --config Release --target lief_samples -- /v:m /logger:%MSBuildLogger%
-#  - cmake .
-#  - cmake --build . --config Release --target check-lief -- /v:m /logger:%MSBuildLogger%
+  - python.exe .\setup.py --lief-test bdist_wheel && exit 0 # Ignore warnings...
 
 after_build:
   #- cmake --build . --config Release --target package -- /v:m /logger:%MSBuildLogger%
