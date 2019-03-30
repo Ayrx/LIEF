@@ -128,9 +128,9 @@ cd lief
 /bin/cp -rf ${LIEF_SRCDIR}/dist/*.whl . || true
 
 if [[ -n $APPVEYOR_JOB_ID ]]; then
-    /bin/cp -rf $LIEF_BUILDDIR/*.zip . || true
+    /bin/cp -rf ${LIEF_SRCDIR}/build/*.zip . || true
 else
-    /bin/cp -rf $LIEF_BUILDDIR/*.tar.gz . || true
+    /bin/cp -rf ${LIEF_SRCDIR}/build/*.tar.gz . || true
 fi
 
 ${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py . > index.html

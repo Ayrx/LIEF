@@ -24,11 +24,13 @@ class LiefDistribution(setuptools.Distribution):
     global_options = setuptools.Distribution.global_options + [
         ('lief-test', None, 'Build and make tests'),
         ('ninja', None, 'Use Ninja as build system'),
+        ('sdk', None, 'Build SDK package'),
         ]
 
     def __init__(self, attrs=None):
         self.lief_test = False
         self.ninja     = False
+        self.sdk       = False
         super().__init__(attrs)
 
 
@@ -61,6 +63,13 @@ class BuildLibrary(build_ext):
             return True
         except Exception as e:
             return False
+
+    @staticmethod
+    def sdk_suffix():
+        if platform.system() == "Windows":
+            return "zip"
+        return "tar.gz"
+
 
 
     def build_extension(self, ext):
@@ -126,10 +135,15 @@ class BuildLibrary(build_ext):
         subprocess.check_call(configure_cmd, cwd=self.build_temp, env=env)
 
         # 2. Build
-        binding_target = "pyLIEF"
+        targets = {
+            'python_bindings': 'pyLIEF',
+        }
+        if self.distribution.sdk:
+            targets['sdk'] = "package"
+
         if platform.system() == "Windows":
             build_cmd = ['cmake', '--build', '.', '--target', "lief_samples"] + build_args
-            log.info(" ".join(build_cmd))
+            #log.info(" ".join(build_cmd))
 
             if self.distribution.lief_test:
                 subprocess.check_call(['cmake', '--build', '.', '--target', "lief_samples"] + build_args, cwd=self.build_temp, env=env)
@@ -137,7 +151,11 @@ class BuildLibrary(build_ext):
                 subprocess.check_call(['cmake', '--build', '.', '--target', "ALL_BUILD"] + build_args, cwd=self.build_temp, env=env)
                 subprocess.check_call(['cmake', '--build', '.', '--target', "check-lief"] + build_args, cwd=self.build_temp, env=env)
             else:
-                subprocess.check_call(['cmake', '--build', '.', '--target', binding_target] + build_args, cwd=self.build_temp, env=env)
+                subprocess.check_call(['cmake', '--build', '.', '--target', targets['python_bindings']] + build_args, cwd=self.build_temp, env=env)
+
+            if 'sdk' in targets:
+                subprocess.check_call(['cmake', '--build', '.', '--target', targets['sdk']] + build_args, cwd=self.build_temp, env=env)
+
         else:
             if build_with_ninja:
                 if self.distribution.lief_test:
@@ -146,7 +164,10 @@ class BuildLibrary(build_ext):
                     subprocess.check_call(['ninja'], cwd=self.build_temp)
                     subprocess.check_call(['ninja', "check-lief"], cwd=self.build_temp)
                 else:
-                    subprocess.check_call(['ninja', binding_target], cwd=self.build_temp)
+                    subprocess.check_call(['ninja', targets['python_bindings']], cwd=self.build_temp)
+
+                if 'sdk' in targets:
+                    subprocess.check_call(['ninja', targets['sdk']], cwd=self.build_temp)
             else:
                 log.info("Using {} jobs".format(jobs))
                 if self.distribution.lief_test:
@@ -155,15 +176,19 @@ class BuildLibrary(build_ext):
                     subprocess.check_call(['make', '-j', str(jobs), "all"], cwd=self.build_temp)
                     subprocess.check_call(['make', '-j', str(jobs), "check-lief"], cwd=self.build_temp)
                 else:
-                    subprocess.check_call(['make', '-j', str(jobs), binding_target], cwd=self.build_temp)
+                    subprocess.check_call(['make', '-j', str(jobs), targets['python_bindings']], cwd=self.build_temp)
 
+                if 'sdk' in targets:
+                    subprocess.check_call(['make', '-j', str(jobs), targets['sdk']], cwd=self.build_temp)
         pylief_dst  = os.path.join(self.build_lib, self.get_ext_filename(self.get_ext_fullname(ext.name)))
+
 
         libsuffix = pylief_dst.split(".")[-1]
 
         pylief_path = os.path.join(cmake_library_output_directory, "{}.{}".format(PACKAGE_NAME, libsuffix))
         if platform.system() == "Windows":
             pylief_path = os.path.join(cmake_library_output_directory, "Release", "api", "python", "Release", "{}.{}".format(PACKAGE_NAME, libsuffix))
+
         if not os.path.exists(self.build_lib):
             os.makedirs(self.build_lib)
 
@@ -171,6 +196,22 @@ class BuildLibrary(build_ext):
         copy_file(
                 pylief_path, pylief_dst, verbose=self.verbose,
                 dry_run=self.dry_run)
+
+
+        # SDK
+        # ===
+        if self.distribution.sdk:
+            sdk_path = list(pathlib.Path(self.build_temp).rglob("LIEF-*.{}".format(self.sdk_suffix())))
+            if len(sdk_path) == 0:
+                log.error("Unable to find SDK archive")
+                sys.exit(1)
+
+            sdk_path = sdk_path.pop()
+
+            copy_file(
+                sdk_path, cmake_library_output_directory, verbose=self.verbose,
+                dry_run=self.dry_run)
+
 
 
 # From setuptools-git-version
