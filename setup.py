@@ -206,10 +206,11 @@ class BuildLibrary(build_ext):
                 log.error("Unable to find SDK archive")
                 sys.exit(1)
 
-            sdk_path = sdk_path.pop()
+            sdk_path = str(sdk_path.pop())
+            sdk_output = str(pathlib.Path(CURRENT_DIR) / "build")
 
             copy_file(
-                sdk_path, cmake_library_output_directory, verbose=self.verbose,
+                sdk_path, sdk_output, verbose=self.verbose,
                 dry_run=self.dry_run)
 
 

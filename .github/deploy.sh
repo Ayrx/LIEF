@@ -122,10 +122,14 @@ fi
 git reset --soft ebacb6adf12a5866db66346ce591f634333bde24
 git ls-files -v
 
-cd lief
+mkdir -p lief && cd lief
 /bin/cp -rf ${LIEF_SRCDIR}/dist/*.zip . || true
 /bin/cp -rf ${LIEF_SRCDIR}/dist/*.egg . || true
 /bin/cp -rf ${LIEF_SRCDIR}/dist/*.whl . || true
+
+${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py . > index.html
+
+cd .. && mkdir -p sdk && cd sdk
 
 if [[ -n $APPVEYOR_JOB_ID ]]; then
     /bin/cp -rf ${LIEF_SRCDIR}/build/*.zip . || true
