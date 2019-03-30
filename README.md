@@ -64,20 +64,20 @@ Main features:
 
 First make sur to have an updated version of setuptools:
 
-```bash
+```console
 pip install setuptools --upgrade
 ```
 
 To install the latest **version** (release):
 
-```python
+```console
 pip install lief
 ```
 
 To install nightlty build:
 
-```python
-pip install [--uer] --index-url  https://lief-project.github.io/packages lief
+```console
+pip install [--user] --index-url  https://lief-project.github.io/packages lief
 ```
 ### Packages
 
