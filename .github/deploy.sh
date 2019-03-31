@@ -127,7 +127,7 @@ mkdir -p lief && cd lief
 /bin/cp -rf ${LIEF_SRCDIR}/dist/*.egg . || true
 /bin/cp -rf ${LIEF_SRCDIR}/dist/*.whl . || true
 
-${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py --output=./index.html --base "packages/lief"
+${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py --output=./index.html --base "packages/lief" .
 
 cd .. && mkdir -p sdk && cd sdk
 
@@ -137,7 +137,7 @@ else
     /bin/cp -rf ${LIEF_SRCDIR}/build/*.tar.gz . || true
 fi
 
-${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py --output=./index.html --base "packages/sdk"
+${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py --output=./index.html --base "packages/sdk" .
 
 git add .
 
