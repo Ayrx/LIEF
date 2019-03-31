@@ -129,6 +129,8 @@ mkdir -p lief && cd lief
 
 ${PYTHON_BINARY} ${LIEF_SRCDIR}/.github/make_index.py --output=./index.html --base "packages/lief" .
 
+git add .
+
 cd .. && mkdir -p sdk && cd sdk
 
 if [[ -n $APPVEYOR_JOB_ID ]]; then
